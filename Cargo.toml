@@ -1,0 +1,12 @@
+[package]
+name = "mylib"
+version = "0.0.1"
+edition = "2018"
+build = "build.rs"
+
+[lib]
+name = "mylib"
+crate-type = ["bin"]
+
+[build-dependencies]
+bindgen = "0.53.1"
