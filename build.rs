@@ -4,29 +4,34 @@ use std::env;
 use std::path::PathBuf;
 
 fn main() {
-    // Tell cargo to tell rustc to link the system bzip2
-    // shared library.
     println!("cargo:rustc-link-lib=static=hell");
+    println!("cargo:rustc-link-lib=dylib=winmm");
+    println!("cargo:rustc-link-lib=dylib=secur32");
+    println!("cargo:rustc-link-lib=dylib=dmoguids");
+    println!("cargo:rustc-link-lib=dylib=wmcodecdspuuid");
+    println!("cargo:rustc-link-lib=dylib=amstrmid");
+    println!("cargo:rustc-link-lib=dylib=msdmo");
+    println!("cargo:rustc-link-lib=dylib=gdi32");
+    println!("cargo:rustc-link-lib=dylib=d3d11");
+    println!("cargo:rustc-link-lib=dylib=dxgi");
 
-    // Tell cargo to invalidate the built crate whenever the wrapper changes
-    println!("cargo:rerun-if-changed=wrapper.hpp");
+    println!("cargo:rerun-if-changed=include/hell.hpp");
 
-    // The bindgen::Builder is the main entry point
-    // to bindgen, and lets you build up options for
-    // the resulting bindings.
     let bindings = bindgen::Builder::default()
-        // The input header we would like to generate
-        // bindings for.
-        .header("wrapper.hpp")
-        // Tell cargo to invalidate the built crate whenever any of the
-        // included header files changed.
+        .header("include/hell.hpp")
+        .clang_arg("--include-directory=include")
+        .clang_arg("--include-directory=include/third_party/abseil-cpp")
+        .clang_arg("--include-directory=include/third_party/googletest/src/googletest/include")
+        .clang_arg("--include-directory=include/third_party/googletest/src/googlemock/include")
+        .clang_arg("-DWEBRTC_WIN")
+        .clang_arg("-DNOMINMAX")
+        .clang_arg("-DWEBRTC_USE_BUILTIN_ISAC_FLOAT")
+        .clang_arg("--")
+        .clang_arg("-std=c++11")
         .parse_callbacks(Box::new(bindgen::CargoCallbacks))
-        // Finish the builder and generate the bindings.
         .generate()
-        // Unwrap the Result and panic on failure.
         .expect("Unable to generate bindings");
 
-    // Write the bindings to the $OUT_DIR/bindings.rs file.
     let out_path = PathBuf::from(env::var("OUT_DIR").unwrap());
     bindings
         .write_to_file(out_path.join("bindings.rs"))

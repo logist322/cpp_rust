@@ -2,12 +2,14 @@
 #![allow(non_camel_case_types)]
 #![allow(non_snake_case)]
 
-include!(concat!(env!("OUT_DIR"), "/bindings.rs"));
+// include!(concat!(env!("OUT_DIR"), "/bindings.rs"));
 
 fn main() {
-    let a = unsafe {
-        hell()
-    };
+    let a = 1;
+
+    // let a = unsafe {
+    //     hell()
+    // };
     
     println!("Rust is here. C++: {}", a);
 
